@@ -1,0 +1,98 @@
+﻿@page
+@using PolynomialApproximation.Models
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<h2>Index</h2>
+
+<form class="form-group" asp-page-handler="enter" method="post">
+    <table>
+        <tr>
+            <td>X</td>
+            <td>Y</td>
+        </tr>
+        @for (int i = 0; i < InputPageData.Size; i++)
+        {
+            <tr>
+                <td>
+                    <input type="text" name="[@i].X"/>
+                </td>
+                <td>
+                    <input type="text" name="[@i].Y"/>
+                </td>
+            </tr>
+        }
+    </table>
+    <input type="text" name="InputPageData.Point"/>
+    <button type="submit" class="btn btn-sm btn-outline-secondary text-dark">Enter</button>
+</form>
+
+<form class="btn btn-sm btn-outline-secondary" asp-page-handler="left" method="post">
+    <button class="btn">▲</button>
+</form>
+<form class="btn btn-sm btn-outline-secondary" asp-page-handler="right" method="post">
+    <button class="btn">▼</button>
+</form>
+
+<div style="width: 55%;
+        margin-left: auto;
+        margin-right: auto;">
+    <canvas id="myChart_simple" width="500" height="400"></canvas>
+</div>
+
+<script>
+    function GetJSON_Simple() {
+        var resp = [];
+        $.ajax({
+            type: "GET",
+            url: '/?handler=Ajax',
+            async: false,
+            contentType: "application/json",
+            success: function (data) {
+                resp.push(data);
+            },
+            error: function (req, status, error) {
+                // do something with error
+                console.log("error");
+                console.log(req);
+                console.log(status);
+                console.log(error);
+                alert("error");
+            }
+        });
+
+        return resp;
+    } 
+
+    var simpleData = GetJSON_Simple(); 
+
+    var ctx_simple = document.getElementById('myChart_simple'); 
+
+    var myChart_simple = new Chart(ctx_simple, {
+        type: 'line',
+        data: {
+            labels: simpleData[0].myX,
+            datasets: [{
+                label: 'X^2',
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgb(255, 99, 132)',
+                borderWidth: 1,
+                data: simpleData[0].myY
+            }
+            ]
+        },
+        options: {
+            scales: {
+                xAxes: [{
+                    stacked: true
+                }],
+                yAxes: [{
+                    stacked: false
+                }]
+            },
+
+        }
+    }); 
+</script>
