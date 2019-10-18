@@ -25,7 +25,7 @@
             </tr>
         }
     </table>
-    <input type="text" name="InputPageData.Point"/>
+    <input type="text" name="PointOfInteresting"/>
     <button type="submit" class="btn btn-sm btn-outline-secondary text-dark">Enter</button>
 </form>
 
@@ -80,8 +80,12 @@
                 borderColor: 'rgb(255, 99, 132)',
                 borderWidth: 1,
                 data: simpleData[0].myY
-            }
-            ]
+            }, {
+                    label: 'Newton',
+                    backgroundColor: 'rgba(100, 99, 132, 0.2)',
+                borderColor: 'rgb(100, 99, 132)',
+                    data: simpleData[0].ourY
+                }]
         },
         options: {
             scales: {

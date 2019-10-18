@@ -33,41 +33,55 @@ namespace PolynomialApproximation.Pages
         {
             double[] x = (from item in userInputs select item.X).ToArray();
             double[] y = (from item in userInputs select item.Y).ToArray();
+            InputPageData.PointOfInteresting = Convert.ToDouble(Request.Form["PointOfInteresting"]);
 
-            List<double> result = new List<double>();
-            result = Polynomial.DividedDifferencesCalculation(x, y);
+            List<double> result = new List<double>(Polynomial.DividedDifferencesCalculation(x, y));
+            Polynomial.result.Clear();
+            double p_x = Polynomial.NewtonePolynomialCalculation(InputPageData.PointOfInteresting, x, y, result.ToArray());
 
-            double p_x = Polynomial.NewtonePolynomialCalculation(InputPageData.Point, x, y, result.ToArray());
-
-            int min = (int)Math.Floor(x[0]);
-            int max = (int)Math.Ceiling(x[^1]);
-
-            int length = max - min;
-
-            MyFunc.x = new double[length * 10 + 1];
-            MyFunc.y = new double[length * 10 + 1];
-
-            for (int i = 0; i < length * 10 + 1; i++)
+            double stepInter = x[1] - x[0];
+            //Подберем шаг графика, нужна проверка на направление!
+            double stepOfGraph = -1;
+            for (int i = 1; i < x.Length; i++)
             {
-                MyFunc.x[min+i] = Math.Round(0.1 * i, 2);
-                MyFunc.y[min + i] = Function.pow( MyFunc.x[min + i] );
+                if (x[i] > InputPageData.PointOfInteresting)
+                {
+                    stepOfGraph = InputPageData.PointOfInteresting - x[i - 1];
+                    break;
+                }
             }
 
-            MyFunc.ourX = InputPageData.Point;
-            MyFunc.ourY = p_x;
+            int length = -1;
+            if(stepOfGraph != -1)
+                length = (int)Math.Round( (x[^1] - x[0])/stepOfGraph );
+
+            if (length != -1)
+            {
+                MyFunc.x = new double[length];
+                MyFunc.y = new double[length];
+
+                MyFunc.InterX = new double[length];
+                MyFunc.InterY = new double[length];
+            }
+            
+            for (int i = 0; i < MyFunc.x.Length; i++)
+            {
+                MyFunc.x[i] = Math.Round( (stepOfGraph * i) + x[0] , 3);
+                MyFunc.y[i] = Function.pow( MyFunc.x[i] );
+
+                MyFunc.InterX[i] = MyFunc.x[i];
+                MyFunc.InterY[i] = Polynomial.NewtonePolynomialCalculation(MyFunc.InterX[i], x, y, result.ToArray());
+            }
         }
 
         public ActionResult OnGetAjaxAsync()
         {
-            double[] x = MyFunc.x;
-            double[] y = MyFunc.y;
-
             return new JsonResult( new
             {
-                myX = x,
-                myY = y,
-                ourX = MyFunc.ourX,
-                ourY = MyFunc.ourY
+                myX = MyFunc.x,
+                myY = MyFunc.y,
+                ourX = MyFunc.InterX,
+                ourY = MyFunc.InterY
             } );
             
         }

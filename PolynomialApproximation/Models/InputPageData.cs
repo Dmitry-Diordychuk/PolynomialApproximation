@@ -10,6 +10,6 @@ namespace PolynomialApproximation.Models
         public static int Size { get; set; } = 1;
         public double X { get; set; }
         public double Y { get; set; }
-        public static double Point { get; set; }
+        public static double PointOfInteresting { get; set; }
     }
 }

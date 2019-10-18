@@ -9,7 +9,7 @@ namespace PolynomialApproximation
 {
     public static class Polynomial
     {
-        private static List<double> result = new List<double>();
+        public static List<double> result = new List<double>();
         public static List<double> DividedDifferencesCalculation(double[] x, double[] y)
         {
             

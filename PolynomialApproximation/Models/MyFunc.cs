@@ -11,7 +11,7 @@ namespace PolynomialApproximation.Models
         public static double[] x;
         public static double[] y;
 
-        public static double ourX;
-        public static double ourY;
+        public static double[] InterX;
+        public static double[] InterY;
     }
 }
